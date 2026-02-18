@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudos de um Observador</title>
+    <style>
+        /* DECLARANDO A FONTE PERSONALIZADA */
+        @font-face {
+            font-family: 'LeorioFont';
+            src: url('Leorio.ttf') format('truetype');
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            /* APLICANDO A FONTE */
+            font-family: 'LeorioFont', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        h2 {
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            margin-top: 20px;
+            font-size: 2.5em; /* Aumentei um pouco para destacar a fonte */
+        }
+
+        .gif-container img {
+            width: 450px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        input {
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #111;
+            color: white;
+            margin-top: 20px;
+            outline: none;
+            width: 250px;
+            text-align: center;
+            transition: 0.3s;
+            /* Aplicando a fonte também no campo de texto */
+            font-family: 'LeorioFont', sans-serif;
+        }
+
+        input:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+        }
+
+        #mensagem {
+            margin-top: 15px;
+            font-weight: bold;
+            height: 20px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gif-container">
+        <img src="Comp-1_63-_1_.gif" alt="Observador">
+    </div>
+
+    <h2>Estudos de um Observador</h2>
+    <p>Pressione <strong>Enter</strong> para processar a palavra-chave:</p>
+
+    <input type="text" id="campoBusca" placeholder="Aguardando entrada...">
+
+    <p id="mensagem"></p>
+
+    <script>
+        const inputBusca = document.getElementById('campoBusca');
+
+        inputBusca.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                verificarPalavra();
+            }
+        });
+
+        function verificarPalavra() {
+            const busca = inputBusca.value.toLowerCase().trim();
+            const mensagem = document.getElementById('mensagem');
+
+            if (busca === "amalgama") {
+                window.open("https://youtu.be/jxt0idbNEE0", "_blank");
+                mensagem.innerText = "Chave aceita! Objeto de estudo identificado.";
+                mensagem.style.color = "#00ff00";
+            } else if (busca === "") {
+                mensagem.innerText = "O campo está vazio.";
+                mensagem.style.color = "orange";
+            } else {
+                mensagem.innerText = "Objeto não identificado. Tente novamente!";
+                mensagem.style.color = "#ff4444";
+            }
+        }
+    </script>
+
+</body>
+</html>
