@@ -14,7 +14,6 @@
         body {
             background-color: black;
             color: white;
-            /* APLICANDO A FONTE */
             font-family: 'LeorioFont', sans-serif;
             display: flex;
             flex-direction: column;
@@ -25,41 +24,175 @@
             text-align: center;
         }
 
+        /* GIF fora da caixa */
+        .gif-container img {
+            width: 450px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* CAIXA CINZA ESCURO ARREDONDADA */
+        .container-principal {
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            width: 80%;
+            max-width: 500px;
+        }
+
         h2 {
             color: #ff0000;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+
+        p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #000;
+            color: white;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            transition: 0.3s;
+            font-family: 'LeorioFont', sans-serif;
+            font-size: 1.1em;
+        }
+
+        input:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        #mensagem {
             margin-top: 20px;
-            font-size: 2.5em; /* Aumentei um pouco para destacar a fonte */
+            font-weight: bold;
+            height: 20px;
+            letter-spacing: 1px;
+        }
+    </style>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudos de um Observador</title>
+    <style>
+        /* FONTE PERSONALIZADA */
+        @font-face {
+            font-family: 'LeorioFont';
+            src: url('Leorio.ttf') format('truetype');
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: visible; 
+        }
+
+        body {
+            color: white;
+            font-family: 'LeorioFont', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            position: relative;
         }
 
         .gif-container img {
             width: 450px;
             height: auto;
             border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .container-principal {
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+            border: 1px solid #333;
+            width: 80%;
+            max-width: 500px;
+            z-index: 2;
+        }
+
+        h2 {
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+
+        p {
+            opacity: 0.9;
+            margin-bottom: 20px;
         }
 
         input {
             padding: 12px;
-            border-radius: 5px;
+            border-radius: 8px;
             border: 1px solid #444;
-            background-color: #111;
+            background-color: #000;
             color: white;
-            margin-top: 20px;
             outline: none;
-            width: 250px;
+            width: 100%;
+            box-sizing: border-box;
             text-align: center;
             transition: 0.3s;
-            /* Aplicando a fonte também no campo de texto */
             font-family: 'LeorioFont', sans-serif;
+            font-size: 1.1em;
         }
 
         input:focus {
             border-color: #ff0000;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        /* ESTILO DO COFRE (ESCONDIDO POR PADRÃO) */
+        #secaoCofre {
+            display: none;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            animation: fadeIn 0.8s;
+        }
+
+        .inputs-senha {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .digito-cofre {
+            width: 50px !important;
+            height: 60px;
+            font-size: 1.5em;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         #mensagem {
-            margin-top: 15px;
+            margin-top: 20px;
             font-weight: bold;
             height: 20px;
             letter-spacing: 1px;
@@ -68,19 +201,35 @@
 </head>
 <body>
 
+    <img src="Estou%20assistindo%20você.png" class="imagem-secreta-bg" alt="Seja minhas mãos">
+
     <div class="gif-container">
         <img src="Comp-1_63-_1_.gif" alt="Observador">
     </div>
 
-    <h2>Estudos de um Observador</h2>
-    <p>Pressione <strong>Enter</strong> para processar a palavra-chave:</p>
+    <div class="container-principal">
+        <h2>Estudos de um Observador</h2>
+        <p>Pressione <strong>Enter</strong> para processar a palavra-chave:</p>
 
-    <input type="text" id="campoBusca" placeholder="Aguardando entrada...">
+        <input type="text" id="campoBusca" placeholder="Aguardando entrada...">
 
-    <p id="mensagem"></p>
+        <p id="mensagem"></p>
+
+        <div id="secaoCofre">
+            <p>Insira a senha do cofre</p>
+            <div class="inputs-senha">
+                <input type="text" maxlength="1" class="digito-cofre">
+                <input type="text" maxlength="1" class="digito-cofre">
+                <input type="text" maxlength="1" class="digito-cofre">
+                <input type="text" maxlength="1" class="digito-cofre">
+            </div>
+        </div>
+    </div>
 
     <script>
         const inputBusca = document.getElementById('campoBusca');
+        const secaoCofre = document.getElementById('secaoCofre');
+        const digitos = document.querySelectorAll('.digito-cofre');
 
         inputBusca.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -92,19 +241,73 @@
             const busca = inputBusca.value.toLowerCase().trim();
             const mensagem = document.getElementById('mensagem');
 
+            // Reseta o cofre ao mudar de palavra
+            secaoCofre.style.display = "none";
+            limparCofre();
+
             if (busca === "amalgama") {
                 window.open("https://youtu.be/jxt0idbNEE0", "_blank");
                 mensagem.innerText = "Chave aceita! Objeto de estudo identificado.";
                 mensagem.style.color = "#00ff00";
-            } else if (busca === "") {
+            } 
+            else if (busca === "inane") {
+                window.open("https://www.youtube.com/watch?v=0twlVgBS2Kg", "_blank");
+                mensagem.innerText = "Chave aceita! Vazio detectado.";
+                mensagem.style.color = "#00ff00";
+            }
+            else if (busca === "girassol") {
+                mensagem.innerText = "Acesso parcial. O cofre exige uma combinação.";
+                mensagem.style.color = "yellow";
+                secaoCofre.style.display = "block";
+                digitos[0].focus(); // Foca no primeiro campo do cofre
+            }
+            else if (busca === "") {
                 mensagem.innerText = "O campo está vazio.";
                 mensagem.style.color = "orange";
-            } else {
+            } 
+            else {
                 mensagem.innerText = "Objeto não identificado. Tente novamente!";
                 mensagem.style.color = "#ff4444";
             }
         }
-    </script>
 
+        // Lógica dos campos do cofre
+        digitos.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                // Pula para o próximo campo
+                if (e.target.value.length === 1 && index < digitos.length - 1) {
+                    digitos[index + 1].focus();
+                }
+                
+                verificarSenhaCofre();
+            });
+
+            // Permite apagar e voltar
+            input.addEventListener('keydown', (e) => {
+                if (e.key === "Backspace" && e.target.value === "" && index > 0) {
+                    digitos[index - 1].focus();
+                }
+            });
+        });
+
+        function verificarSenhaCofre() {
+            let senhaDigitada = "";
+            digitos.forEach(input => senhaDigitada += input.value);
+
+            if (senhaDigitada.length === 4) {
+                if (senhaDigitada === "2702") {
+                    alert("Cofre aberto!");
+                    window.location.href = "https://youtu.be/Xohu3ibYpk4"; // Link de recompensa
+                } else {
+                    document.getElementById('mensagem').innerText = "Senha incorreta.";
+                    document.getElementById('mensagem').style.color = "red";
+                }
+            }
+        }
+
+        function limparCofre() {
+            digitos.forEach(input => input.value = "");
+        }
+    </script>
 </body>
 </html>
