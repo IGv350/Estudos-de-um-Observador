@@ -5,90 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estudos de um Observador</title>
     <style>
-        /* DECLARANDO A FONTE PERSONALIZADA */
-        @font-face {
-            font-family: 'LeorioFont';
-            src: url('Leorio.ttf') format('truetype');
-        }
-
-        body {
-            background-color: black;
-            color: white;
-            font-family: 'LeorioFont', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-
-        /* GIF fora da caixa */
-        .gif-container img {
-            width: 450px;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        /* CAIXA CINZA ESCURO ARREDONDADA */
-        .container-principal {
-            background-color: #1a1a1a;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid #333;
-            width: 80%;
-            max-width: 500px;
-        }
-
-        h2 {
-            color: #ff0000;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-            margin: 0 0 10px 0;
-            font-size: 2.5em;
-        }
-
-        p {
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-
-        input {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background-color: #000;
-            color: white;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
-            transition: 0.3s;
-            font-family: 'LeorioFont', sans-serif;
-            font-size: 1.1em;
-        }
-
-        input:focus {
-            border-color: #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-        }
-
-        #mensagem {
-            margin-top: 20px;
-            font-weight: bold;
-            height: 20px;
-            letter-spacing: 1px;
-        }
-    </style>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estudos de um Observador</title>
-    <style>
         /* FONTE PERSONALIZADA */
         @font-face {
             font-family: 'LeorioFont';
@@ -112,6 +28,19 @@
             height: 100vh;
             text-align: center;
             position: relative;
+        }
+
+        /* IMAGEM GIGANTE CENTRALIZADA (Easter Egg do Zoom) */
+        .imagem-secreta-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 3500px;
+            opacity: 0.06;
+            z-index: -1;
+            pointer-events: none;
+            filter: grayscale(100%);
         }
 
         .gif-container img {
@@ -164,7 +93,6 @@
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
 
-        /* ESTILO DO COFRE (ESCONDIDO POR PADRÃO) */
         #secaoCofre {
             display: none;
             margin-top: 30px;
@@ -241,7 +169,7 @@
             const busca = inputBusca.value.toLowerCase().trim();
             const mensagem = document.getElementById('mensagem');
 
-            // Reseta o cofre ao mudar de palavra
+            // Esconde o cofre se mudar a palavra
             secaoCofre.style.display = "none";
             limparCofre();
 
@@ -259,7 +187,14 @@
                 mensagem.innerText = "Acesso parcial. O cofre exige uma combinação.";
                 mensagem.style.color = "yellow";
                 secaoCofre.style.display = "block";
-                digitos[0].focus(); // Foca no primeiro campo do cofre
+                digitos[0].focus();
+            }
+            // NOVA PALAVRA-CHAVE ADICIONADA ABAIXO
+            else if (busca === "gisele") {
+                mensagem.innerText = "Redirecionando para os registros de Gisele...";
+                mensagem.style.color = "#00ff00";
+                // Abre o arquivo na mesma aba
+                window.location.href = "gisele.html"; 
             }
             else if (busca === "") {
                 mensagem.innerText = "O campo está vazio.";
@@ -271,18 +206,14 @@
             }
         }
 
-        // Lógica dos campos do cofre
         digitos.forEach((input, index) => {
             input.addEventListener('input', (e) => {
-                // Pula para o próximo campo
                 if (e.target.value.length === 1 && index < digitos.length - 1) {
                     digitos[index + 1].focus();
                 }
-                
                 verificarSenhaCofre();
             });
 
-            // Permite apagar e voltar
             input.addEventListener('keydown', (e) => {
                 if (e.key === "Backspace" && e.target.value === "" && index > 0) {
                     digitos[index - 1].focus();
@@ -297,7 +228,7 @@
             if (senhaDigitada.length === 4) {
                 if (senhaDigitada === "2702") {
                     alert("Cofre aberto!");
-                    window.location.href = "https://youtu.be/Xohu3ibYpk4"; // Link de recompensa
+                    window.location.href = "https://youtu.be/Xohu3ibYpk4";
                 } else {
                     document.getElementById('mensagem').innerText = "Senha incorreta.";
                     document.getElementById('mensagem').style.color = "red";
