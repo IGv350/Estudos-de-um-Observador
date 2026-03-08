@@ -5,54 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arquivo Classificado</title>
     <style>
-        /* Estilo para garantir o fundo preto total e centralização */
         body {
             background-color: black;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center; /* Centraliza horizontalmente */
-            align-items: center;     /* Centraliza verticalmente */
-            height: 100vh;           /* Usa toda a altura da tela */
-            overflow: hidden;        /* Impede barras de rolagem */
+            justify-content: center; 
+            align-items: center;     
+            height: 100vh;           
+            overflow: hidden;        
         }
 
-        /* Estilo para remover a borda padrão do link na imagem */
-        a.imagem-clicavel {
-            text-decoration: none; /* Remove sublinhado se houver text */
-            border: none;          /* Remove bordas do link */
-            outline: none;         /* Remove o contorno de foco */
+        /* Removido o ponteiro de link padrão para controlar via JS */
+        .container-olho {
+            cursor: pointer;
+            border: none;
+            background: none;
+            outline: none;
+            padding: 0;
         }
 
-        /* Estilo para a imagem */
-        .imagem-clicavel img {
-            max-width: 80%;          /* Impede que a imagem fique maior que a tela */
+        .container-olho img {
+            max-width: 80%;          
             height: auto;
-            border-radius: 15px;     /* Mantém as bordas levemente arredondadas (opcional) */
-            
-            /* REMOVIDO: box-shadow (a sombra vermelha) */
-            /* REMOVIDO: border (para garantir que não haja borda na imagem) */
-            border: none; 
-
-            cursor: pointer;          /* Muda o cursor para a "mãozinha" */
-            transition: transform 0.5s ease, filter 0.5s ease; /* Efeito suave apenas no tamanho e brilho */
+            border-radius: 15px;     
+            transition: transform 0.5s ease, filter 0.5s ease; 
         }
 
-        /* Efeito ao passar o mouse sobre a imagem */
-        .imagem-clicavel img:hover {
-            transform: scale(1.05);  /* Aumenta a imagem levemente */
-            
-            /* REMOVIDO: box-shadow mais forte no hover */
-            
-            filter: brightness(1.2); /* Deixa a imagem um pouco mais clara */
+        .container-olho img:hover {
+            transform: scale(1.05);  
+            filter: brightness(1.2); 
+        }
+
+        /* Efeito de tremor opcional quando clica */
+        .tremendo {
+            animation: tremor 0.1s infinite;
+        }
+
+        @keyframes tremor {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-1px, -2px) rotate(-1deg); }
+            40% { transform: translate(-3px, 0px) rotate(1deg); }
+            60% { transform: translate(3px, 2px) rotate(0deg); }
+            80% { transform: translate(1px, -1px) rotate(1deg); }
+            100% { transform: translate(-1px, 2px) rotate(-1deg); }
         }
     </style>
 </head>
 <body>
 
-    <a href="https://youtu.be/cC6M6aX_sQQ" class="imagem-clicavel" target="_blank">
-        <img src="Pupila.png" alt="olho">
-    </a>
+    <audio id="musicaFundo">
+        <source src="Morta_por_dancar.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container-olho" onclick="iniciarSequencia(this)">
+        <img src="Pupila.png" alt="olho" id="imagemOlho">
+    </div>
+
+    <script>
+        function iniciarSequencia(elemento) {
+            const audio = document.getElementById('musicaFundo');
+            const imagem = document.getElementById('imagemOlho');
+            
+            // 1. Toca a música
+            audio.play().catch(e => console.log("Erro ao tocar: ", e));
+
+            // 2. Adiciona um efeito visual de tremor (opcional, para dar tensão)
+            imagem.classList.add('tremendo');
+
+            // 3. Espera 15 segundos (15000 milissegundos)
+            setTimeout(function() {
+                // 4. Para a música
+                audio.pause();
+                
+                // 5. Redireciona para o link
+                window.location.href = "https://youtu.be/cC6M6aX_sQQ";
+            }, 15000); 
+        }
+    </script>
 
 </body>
 </html>
