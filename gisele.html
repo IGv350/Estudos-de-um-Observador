@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquivo Classificado</title>
+    <style>
+        /* Estilo para garantir o fundo preto total e centralização */
+        body {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center;     /* Centraliza verticalmente */
+            height: 100vh;           /* Usa toda a altura da tela */
+            overflow: hidden;        /* Impede barras de rolagem */
+        }
+
+        /* Estilo para remover a borda padrão do link na imagem */
+        a.imagem-clicavel {
+            text-decoration: none; /* Remove sublinhado se houver text */
+            border: none;          /* Remove bordas do link */
+            outline: none;         /* Remove o contorno de foco */
+        }
+
+        /* Estilo para a imagem */
+        .imagem-clicavel img {
+            max-width: 80%;          /* Impede que a imagem fique maior que a tela */
+            height: auto;
+            border-radius: 15px;     /* Mantém as bordas levemente arredondadas (opcional) */
+            
+            /* REMOVIDO: box-shadow (a sombra vermelha) */
+            /* REMOVIDO: border (para garantir que não haja borda na imagem) */
+            border: none; 
+
+            cursor: pointer;          /* Muda o cursor para a "mãozinha" */
+            transition: transform 0.5s ease, filter 0.5s ease; /* Efeito suave apenas no tamanho e brilho */
+        }
+
+        /* Efeito ao passar o mouse sobre a imagem */
+        .imagem-clicavel img:hover {
+            transform: scale(1.05);  /* Aumenta a imagem levemente */
+            
+            /* REMOVIDO: box-shadow mais forte no hover */
+            
+            filter: brightness(1.2); /* Deixa a imagem um pouco mais clara */
+        }
+    </style>
+</head>
+<body>
+
+    <a href="https://youtu.be/cC6M6aX_sQQ" class="imagem-clicavel" target="_blank">
+        <img src="Pupila.png" alt="olho">
+    </a>
+
+</body>
+</html>
