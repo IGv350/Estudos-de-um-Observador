@@ -189,7 +189,7 @@
 
             const hashBusca = await gerarHash(busca);
 
-            // "4ef493..." é o hash criptografado para a palavra "girassol"
+            // "4ef493..." é o hash criptografado para a palavra
             if (hashBusca === "4ef4930510166299b9cf2996847de1b4a0709b1f09ba96ba713ff404f2f9c565") {
                 mensagem.innerText = "Acesso parcial. O cofre exige uma combinação.";
                 mensagem.style.color = "yellow";
@@ -200,8 +200,7 @@
                 mensagem.innerText = "Processando requisição...";
                 mensagem.style.color = "gray";
 
-                // DICA 4 + FETCH: Testa em segundo plano se existe o arquivo html com o nome digitado
-                // Funciona para amalgama.html, inane.html e gisele.html sem expor os nomes no código
+
                 fetch(busca + ".html", { method: 'HEAD' })
                 .then(response => {
                     if (response.ok) {
@@ -238,26 +237,28 @@
             });
         });
 
-        async function verificarSenhaCofre() {
-            let senhaDigitada = "";
-            digitos.forEach(input => senhaDigitada += input.value);
+async function verificarSenhaCofre() {
+    let senhaDigitada = "";
+    digitos.forEach(input => senhaDigitada += input.value);
 
-            if (senhaDigitada.length === 4) {
-                const hashSenha = await gerarHash(senhaDigitada);
+    if (senhaDigitada.length === 4) {
+        const hashSenha = await gerarHash(senhaDigitada);
 
-                // "9fb042..." é o hash criptografado para a senha "2702"
-                if (hashSenha === "9fb042738374cbdf74288cb431d10292839a9c299c8f2b7405a8f4c2c62cda80") {
-                    mensagem.innerText = "Acesso concedido. Abrindo canal seguro...";
-                    mensagem.style.color = "#00ff00";
-                    setTimeout(() => {
-                        window.location.href = "recompensa.html?auth=2702";
-                    }, 1000);
-                } else {
-                    mensagem.innerText = "Senha incorreta.";
-                    mensagem.style.color = "red";
-                }
-            }
+        // "9fb042..." é o hash criptografado para a senha
+        if (hashSenha === "9fb042738374cbdf74288cb431d10292839a9c299c8f2b7405a8f4c2c62cda80") {
+            mensagem.innerText = "Acesso concedido. Abrindo canal seguro...";
+            mensagem.style.color = "#00ff00";
+            
+            setTimeout(() => {
+                // Envia o parâmetro diretamente na URL para o GitHub processar
+                window.location.href = "girassol.html?auth=2702";
+            }, 800);
+        } else {
+            mensagem.innerText = "Senha incorreta.";
+            mensagem.style.color = "red";
         }
+    }
+}
 
         function limparCofre() {
             digitos.forEach(input => input.value = "");
