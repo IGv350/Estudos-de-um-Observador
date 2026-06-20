@@ -30,7 +30,7 @@
             position: relative;
         }
 
-        /* IMAGEM GIGANTE CENTRALIZADA (Easter Egg do Zoom) */
+        /* IMAGEM GIGANTE CENTRALIZADA DE FUNDO */
         .imagem-secreta-bg {
             position: absolute;
             top: 50%;
@@ -93,6 +93,7 @@
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
 
+        /* ESTILO DO COFRE */
         #secaoCofre {
             display: none;
             margin-top: 30px;
@@ -139,7 +140,7 @@
         <h2>Estudos de um Observador</h2>
         <p>Pressione <strong>Enter</strong> para processar a palavra-chave:</p>
 
-        <input type="text" id="campoBusca" placeholder="Aguardando entrada...">
+        <input type="text" id="campoBusca" placeholder="Aguardando entrada..." autocomplete="off">
 
         <p id="mensagem"></p>
 
@@ -158,6 +159,15 @@
         const inputBusca = document.getElementById('campoBusca');
         const secaoCofre = document.getElementById('secaoCofre');
         const digitos = document.querySelectorAll('.digito-cofre');
+        const mensagem = document.getElementById('mensagem');
+
+        // Algoritmo SHA-256 para esconder textos e senhas do F12
+        async function gerarHash(texto) {
+            const msgBuffer = new TextEncoder().encode(texto);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
 
         inputBusca.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -165,47 +175,54 @@
             }
         });
 
-        function verificarPalavra() {
+        async function verificarPalavra() {
             const busca = inputBusca.value.toLowerCase().trim();
-            const mensagem = document.getElementById('mensagem');
 
-            // Esconde o cofre se mudar a palavra
             secaoCofre.style.display = "none";
             limparCofre();
 
-            if (busca === "amalgama") {
-                window.open("https://youtu.be/jxt0idbNEE0", "_blank");
-                mensagem.innerText = "Chave aceita! Objeto de estudo identificado.";
-                mensagem.style.color = "#00ff00";
-            } 
-            else if (busca === "inane") {
-                window.open("https://www.youtube.com/watch?v=0twlVgBS2Kg", "_blank");
-                mensagem.innerText = "Chave aceita! Vazio detectado.";
-                mensagem.style.color = "#00ff00";
+            if (busca === "") {
+                mensagem.innerText = "O campo está vazio.";
+                mensagem.style.color = "orange";
+                return;
             }
-            else if (busca === "girassol") {
+
+            const hashBusca = await gerarHash(busca);
+
+            // "4ef493..." é o hash criptografado para a palavra "girassol"
+            if (hashBusca === "4ef4930510166299b9cf2996847de1b4a0709b1f09ba96ba713ff404f2f9c565") {
                 mensagem.innerText = "Acesso parcial. O cofre exige uma combinação.";
                 mensagem.style.color = "yellow";
                 secaoCofre.style.display = "block";
                 digitos[0].focus();
-            }
-            // NOVA PALAVRA-CHAVE ADICIONADA ABAIXO
-            else if (busca === "gisele") {
-                mensagem.innerText = "Redirecionando para os registros de Gisele...";
-                mensagem.style.color = "#00ff00";
-                // Abre o arquivo na mesma aba
-                window.location.href = "gisele.html"; 
-            }
-            else if (busca === "") {
-                mensagem.innerText = "O campo está vazio.";
-                mensagem.style.color = "orange";
             } 
             else {
-                mensagem.innerText = "Objeto não identificado. Tente novamente!";
-                mensagem.style.color = "#ff4444";
+                mensagem.innerText = "Processando requisição...";
+                mensagem.style.color = "gray";
+
+                // DICA 4 + FETCH: Testa em segundo plano se existe o arquivo html com o nome digitado
+                // Funciona para amalgama.html, inane.html e gisele.html sem expor os nomes no código
+                fetch(busca + ".html", { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        mensagem.innerText = "Chave aceita! Objeto de estudo identificado.";
+                        mensagem.style.color = "#00ff00";
+                        setTimeout(() => {
+                            window.location.href = busca + ".html";
+                        }, 800);
+                    } else {
+                        mensagem.innerText = "Objeto não identificado. Tente novamente!";
+                        mensagem.style.color = "#ff4444";
+                    }
+                })
+                .catch(() => {
+                    mensagem.innerText = "Objeto não identificado. Tente novamente!";
+                    mensagem.style.color = "#ff4444";
+                });
             }
         }
 
+        // Lógica de digitação sequencial do cofre
         digitos.forEach((input, index) => {
             input.addEventListener('input', (e) => {
                 if (e.target.value.length === 1 && index < digitos.length - 1) {
@@ -221,17 +238,23 @@
             });
         });
 
-        function verificarSenhaCofre() {
+        async function verificarSenhaCofre() {
             let senhaDigitada = "";
             digitos.forEach(input => senhaDigitada += input.value);
 
             if (senhaDigitada.length === 4) {
-                if (senhaDigitada === "2702") {
-                    alert("Cofre aberto!");
-                    window.location.href = "https://youtu.be/Xohu3ibYpk4";
+                const hashSenha = await gerarHash(senhaDigitada);
+
+                // "9fb042..." é o hash criptografado para a senha "2702"
+                if (hashSenha === "9fb042738374cbdf74288cb431d10292839a9c299c8f2b7405a8f4c2c62cda80") {
+                    mensagem.innerText = "Acesso concedido. Abrindo canal seguro...";
+                    mensagem.style.color = "#00ff00";
+                    setTimeout(() => {
+                        window.location.href = "recompensa.html?auth=2702";
+                    }, 1000);
                 } else {
-                    document.getElementById('mensagem').innerText = "Senha incorreta.";
-                    document.getElementById('mensagem').style.color = "red";
+                    mensagem.innerText = "Senha incorreta.";
+                    mensagem.style.color = "red";
                 }
             }
         }
