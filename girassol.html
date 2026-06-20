@@ -2,20 +2,21 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Processando Arquivo de Recompensa...</title>
+    <title>Processando...</title>
 </head>
 <body style="background-color: black; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
 
-    <div id="status">Verificando credenciais de acesso...</div>
+    <div id="status" style="font-size: 1.2em; font-weight: bold; letter-spacing: 1px; text-align: center;">Verificando credenciais de acesso...</div>
 
     <script>
-        // Função para extrair parâmetros da URL (?auth=2702)
+        // Captura o que está escrito após o "?" na URL do navegador
         const urlParams = new URLSearchParams(window.location.search);
         const tokenToken = urlParams.get('auth');
 
-        // Link altamente secreto do YouTube (Fica escondido nesta subpágina)
+        // Seu link do YouTube
         const videoSecreto = "https://youtu.be/Xohu3ibYpk4";
 
+        // Verifica se o código bate com a senha do cofre
         if (tokenToken === "2702") {
             document.getElementById('status').innerText = "Acesso validado. Carregando registro...";
             document.getElementById('status').style.color = "#00ff00";
@@ -24,12 +25,12 @@
                 window.location.href = videoSecreto;
             }, 1000);
         } else {
-            // Se alguém tentar trapacear digitando diretamente "recompensa.html", cai aqui:
+            // Se o jogador tentar acessar digitando apenas "recompensa.html" no GitHub:
             document.getElementById('status').innerText = "Acesso negado! Credenciais ausentes. Retornando...";
             document.getElementById('status').style.color = "#ff4444";
             
             setTimeout(() => {
-                window.location.href = "index.html"; // Altere para o nome do seu arquivo principal
+                window.location.href = "index.html"; // Mude para o nome exato do seu arquivo principal se não for index.html
             }, 2000);
         }
     </script>
