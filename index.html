@@ -241,6 +241,7 @@ async function verificarSenhaCofre() {
     let senhaDigitada = "";
     digitos.forEach(input => senhaDigitada += input.value);
 
+    // CRUCIAL:
     if (senhaDigitada.length === 4) {
         const hashSenha = await gerarHash(senhaDigitada);
 
@@ -250,13 +251,20 @@ async function verificarSenhaCofre() {
             mensagem.style.color = "#00ff00";
             
             setTimeout(() => {
-                // Envia o parâmetro diretamente na URL para o GitHub processar
-                window.location.href = "girassol.html?auth=2702";
+                // Envia para o arquivo guardião passando a senha por URL
+                window.location.href = "recompensa.html?auth=2702";
             }, 800);
         } else {
             mensagem.innerText = "Senha incorreta.";
             mensagem.style.color = "red";
+            limparCofre();
+            digitos[0].focus(); // Devolve o foco para o primeiro campo para o jogador tentar de novo
         }
+    } else {
+        // Se ainda não tem 4 dígitos, limpa qualquer aviso de erro antigo da tela
+        // e não bloqueia o jogador.
+        mensagem.innerText = "Acesso parcial. O cofre exige uma combinação.";
+        mensagem.style.color = "yellow";
     }
 }
 
