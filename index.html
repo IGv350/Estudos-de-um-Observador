@@ -93,33 +93,6 @@
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
 
-        /* ESTILO DO COFRE */
-        #secaoCofre {
-            display: none;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            animation: fadeIn 0.8s;
-        }
-
-        .inputs-senha {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .digito-cofre {
-            width: 50px !important;
-            height: 60px;
-            font-size: 1.5em;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         #mensagem {
             margin-top: 20px;
             font-weight: bold;
@@ -143,31 +116,14 @@
         <input type="text" id="campoBusca" placeholder="Aguardando entrada..." autocomplete="off">
 
         <p id="mensagem"></p>
-
-        <div id="secaoCofre">
-            <p>Insira a senha do cofre</p>
-            <div class="inputs-senha">
-                <input type="text" maxlength="1" class="digito-cofre">
-                <input type="text" maxlength="1" class="digito-cofre">
-                <input type="text" maxlength="1" class="digito-cofre">
-                <input type="text" maxlength="1" class="digito-cofre">
-            </div>
-        </div>
     </div>
 
     <script>
         const inputBusca = document.getElementById('campoBusca');
-        const secaoCofre = document.getElementById('secaoCofre');
-        const digitos = document.querySelectorAll('.digito-cofre');
         const mensagem = document.getElementById('mensagem');
 
-        // Algoritmo SHA-256 para esconder textos e senhas do F12
-        async function gerarHash(texto) {
-            const msgBuffer = new TextEncoder().encode(texto);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        // Foca automaticamente no campo ao abrir a página
+        inputBusca.focus();
 
         inputBusca.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -175,11 +131,8 @@
             }
         });
 
-        async function verificarPalavra() {
+        function verificarPalavra() {
             const busca = inputBusca.value.toLowerCase().trim();
-
-            secaoCofre.style.display = "none";
-            limparCofre();
 
             if (busca === "") {
                 mensagem.innerText = "O campo está vazio.";
@@ -187,89 +140,27 @@
                 return;
             }
 
-            const hashBusca = await gerarHash(busca);
+            mensagem.innerText = "Processando requisição...";
+            mensagem.style.color = "gray";
 
-            // "4ef493..." é o hash criptografado para a palavra
-            if (hashBusca === "4ef4930510166299b9cf2996847de1b4a0709b1f09ba96ba713ff404f2f9c565") {
-                mensagem.innerText = "Acesso parcial. O cofre exige uma combinação.";
-                mensagem.style.color = "yellow";
-                secaoCofre.style.display = "block";
-                digitos[0].focus();
-            } 
-            else {
-                mensagem.innerText = "Processando requisição...";
-                mensagem.style.color = "gray";
-
-
-                fetch(busca + ".html", { method: 'HEAD' })
-                .then(response => {
-                    if (response.ok) {
-                        mensagem.innerText = "Chave aceita! Objeto de estudo identificado.";
-                        mensagem.style.color = "#00ff00";
-                        setTimeout(() => {
-                            window.location.href = busca + ".html";
-                        }, 800);
-                    } else {
-                        mensagem.innerText = "Objeto não identificado. Tente novamente!";
-                        mensagem.style.color = "#ff4444";
-                    }
-                })
-                .catch(() => {
+            // Procura silenciosamente se existe o arquivo HTML correspondente na sua hospedagem
+            fetch(busca + ".html", { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    mensagem.innerText = "Chave aceita! Objeto de estudo identificado.";
+                    mensagem.style.color = "#00ff00";
+                    setTimeout(() => {
+                        window.location.href = busca + ".html";
+                    }, 800);
+                } else {
                     mensagem.innerText = "Objeto não identificado. Tente novamente!";
                     mensagem.style.color = "#ff4444";
-                });
-            }
-        }
-
-        // Lógica de digitação sequencial do cofre
-        digitos.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1 && index < digitos.length - 1) {
-                    digitos[index + 1].focus();
                 }
-                verificarSenhaCofre();
+            })
+            .catch(() => {
+                mensagem.innerText = "Objeto não identificado. Tente novamente!";
+                mensagem.style.color = "#ff4444";
             });
-
-            input.addEventListener('keydown', (e) => {
-                if (e.key === "Backspace" && e.target.value === "" && index > 0) {
-                    digitos[index - 1].focus();
-                }
-            });
-        });
-
-async function verificarSenhaCofre() {
-    let senhaDigitada = "";
-    digitos.forEach(input => senhaDigitada += input.value);
-
-    // CRUCIAL:
-    if (senhaDigitada.length === 4) {
-        const hashSenha = await gerarHash(senhaDigitada);
-
-        // "9fb042..." é o hash criptografado para a senha
-        if (hashSenha === "9fb042738374cbdf74288cb431d10292839a9c299c8f2b7405a8f4c2c62cda80") {
-            mensagem.innerText = "Acesso concedido. Abrindo canal seguro...";
-            mensagem.style.color = "#00ff00";
-            
-            setTimeout(() => {
-                // Envia para o arquivo guardião passando a senha por URL
-                window.location.href = "recompensa.html?auth=2702";
-            }, 800);
-        } else {
-            mensagem.innerText = "Senha incorreta.";
-            mensagem.style.color = "red";
-            limparCofre();
-            digitos[0].focus(); // Devolve o foco para o primeiro campo para o jogador tentar de novo
-        }
-    } else {
-        // Se ainda não tem 4 dígitos, limpa qualquer aviso de erro antigo da tela
-        // e não bloqueia o jogador.
-        mensagem.innerText = "Acesso parcial. O cofre exige uma combinação.";
-        mensagem.style.color = "yellow";
-    }
-}
-
-        function limparCofre() {
-            digitos.forEach(input => input.value = "");
         }
     </script>
 </body>
