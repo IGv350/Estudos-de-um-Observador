@@ -2,36 +2,167 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Processando...</title>
-</head>
-<body style="background-color: black; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudos de um Observador - Cofre</title>
+    <style>
+        /* FONTE PERSONALIZADA */
+        @font-face {
+            font-family: 'LeorioFont';
+            src: url('Leorio.ttf') format('truetype');
+        }
 
-    <div id="status" style="font-size: 1.2em; font-weight: bold; letter-spacing: 1px; text-align: center;">Verificando credenciais de acesso...</div>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: 'LeorioFont', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container-principal {
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+            border: 1px solid #333;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        h2 {
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            margin: 0 0 10px 0;
+            font-size: 2.3em;
+        }
+
+        p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .inputs-senha {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input {
+            width: 50px;
+            height: 60px;
+            padding: 5px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #000;
+            color: white;
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
+            transition: 0.3s;
+            font-family: 'LeorioFont', sans-serif;
+            font-size: 1.8em;
+        }
+
+        input:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        #mensagem {
+            margin-top: 25px;
+            font-weight: bold;
+            height: 20px;
+            letter-spacing: 1px;
+            color: yellow;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-principal">
+        <h2>Acesso Parcial</h2>
+        <p>O arquivo exige uma combinação de 4 dígitos para ser descriptografado:</p>
+
+        <div class="inputs-senha">
+            <input type="text" maxlength="1" class="digito-cofre" autocomplete="off">
+            <input type="text" maxlength="1" class="digito-cofre" autocomplete="off">
+            <input type="text" maxlength="1" class="digito-cofre" autocomplete="off">
+            <input type="text" maxlength="1" class="digito-cofre" autocomplete="off">
+        </div>
+
+        <p id="mensagem">Aguardando combinação...</p>
+    </div>
 
     <script>
-        // Captura o que está escrito após o "?" na URL do navegador
-        const urlParams = new URLSearchParams(window.location.search);
-        const tokenToken = urlParams.get('auth');
+        const digitos = document.querySelectorAll('.digito-cofre');
+        const mensagem = document.getElementById('mensagem');
 
-        // Seu link do YouTube
-        const videoSecreto = "https://youtu.be/Xohu3ibYpk4";
+        // Foca automaticamente no primeiro campo ao carregar
+        digitos[0].focus();
 
-        // Verifica se o código bate com a senha do cofre
-        if (tokenToken === "2702") {
-            document.getElementById('status').innerText = "Acesso validado. Carregando registro...";
-            document.getElementById('status').style.color = "#00ff00";
-            
-            setTimeout(() => {
-                window.location.href = videoSecreto;
-            }, 1000);
-        } else {
-            // Se o jogador tentar acessar digitando apenas "recompensa.html" no GitHub:
-            document.getElementById('status').innerText = "Acesso negado! Credenciais ausentes. Retornando...";
-            document.getElementById('status').style.color = "#ff4444";
-            
-            setTimeout(() => {
-                window.location.href = "index.html"; // Mude para o nome exato do seu arquivo principal se não for index.html
-            }, 2000);
+        // Função SHA-256 para esconder a senha do Inspetor (F12)
+        async function gerarHash(texto) {
+            const msgBuffer = new TextEncoder().encode(texto);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Lógica de digitação sequencial nos quadradinhos
+        digitos.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < digitos.length - 1) {
+                    digitos[index + 1].focus();
+                }
+                verificarSenha();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === "Backspace" && e.target.value === "" && index > 0) {
+                    digitos[index - 1].focus();
+                }
+            });
+        });
+
+        async function verificarSenha() {
+            let senhaDigitada = "";
+            digitos.forEach(input => senhaDigitada += input.value);
+
+            // Só faz o teste quando todos os 4 campos forem preenchidos
+            if (senhaDigitada.length === 4) {
+                const hashSenha = await gerarHash(senhaDigitada);
+
+                // O hash abaixo corresponde à senha "2707" criptografada
+                if (hashSenha === "ceb43f4b6a9e1cb4659a433604f3287df1f6cb7980e03a95029472304859f518") {
+                    mensagem.innerText = "Combinação aceita. Descriptografando arquivo...";
+                    mensagem.style.color = "#00ff00";
+                    
+                    setTimeout(() => {
+                        window.location.href = "https://youtu.be/Xohu3ibYpk4";
+                    }, 1000);
+                } else {
+                    mensagem.innerText = "Combinação incorreta. Acesso negado.";
+                    mensagem.style.color = "#ff4444";
+                    setTimeout(() => {
+                        limparCofre();
+                    }, 600);
+                }
+            } else {
+                mensagem.innerText = "Aguardando combinação...";
+                mensagem.style.color = "yellow";
+            }
+        }
+
+        function limparCofre() {
+            digitos.forEach(input => input.value = "");
+            digitos[0].focus();
         }
     </script>
 </body>
