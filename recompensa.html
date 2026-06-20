@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Processando Arquivo de Recompensa...</title>
+</head>
+<body style="background-color: black; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+
+    <div id="status">Verificando credenciais de acesso...</div>
+
+    <script>
+        // Função para extrair parâmetros da URL (?auth=2702)
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenToken = urlParams.get('auth');
+
+        // Link altamente secreto do YouTube (Fica escondido nesta subpágina)
+        const videoSecreto = "https://youtu.be/Xohu3ibYpk4";
+
+        if (tokenToken === "2702") {
+            document.getElementById('status').innerText = "Acesso validado. Carregando registro...";
+            document.getElementById('status').style.color = "#00ff00";
+            
+            setTimeout(() => {
+                window.location.href = videoSecreto;
+            }, 1000);
+        } else {
+            // Se alguém tentar trapacear digitando diretamente "recompensa.html", cai aqui:
+            document.getElementById('status').innerText = "Acesso negado! Credenciais ausentes. Retornando...";
+            document.getElementById('status').style.color = "#ff4444";
+            
+            setTimeout(() => {
+                window.location.href = "index.html"; // Altere para o nome do seu arquivo principal
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
