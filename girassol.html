@@ -13,22 +13,25 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Lógica de digitação sequencial nos quadradinhos
+        // Lógica de digitação e navegação nos quadradinhos
         digitos.forEach((input, index) => {
+            // Pula para o próximo campo automaticamente ao digitar
             input.addEventListener('input', (e) => {
                 if (e.target.value.length === 1 && index < digitos.length - 1) {
                     digitos[index + 1].focus();
                 }
-                
-                // O pequeno atraso de 50ms garante que o navegador registre o caractere antes de testar
-                setTimeout(() => {
-                    verificarSenha();
-                }, 50);
             });
 
+            // Monitora as teclas pressionadas (Backspace e Enter)
             input.addEventListener('keydown', (e) => {
+                // Permite apagar e voltar para o campo anterior
                 if (e.key === "Backspace" && e.target.value === "" && index > 0) {
                     digitos[index - 1].focus();
+                }
+                
+                // Se pressionar Enter em qualquer campo, processa a senha
+                if (e.key === "Enter") {
+                    verificarSenha();
                 }
             });
         });
@@ -37,33 +40,39 @@
             let senhaDigitada = "";
             digitos.forEach(input => senhaDigitada += input.value);
 
-            // Só faz o teste quando todos os 4 campos forem preenchidos
-            if (senhaDigitada.length === 4) {
-                const hashSenha = await gerarHash(senhaDigitada);
+            // Verifica se o jogador preencheu os 4 dígitos antes de validar
+            if (senhaDigitada.length < 4) {
+                mensagem.innerText = "Insira a combinação completa de 4 dígitos.";
+                mensagem.style.color = "orange";
+                return;
+            }
 
-                // O hash abaixo corresponde à senha "2707" criptografada
-                if (hashSenha === "ceb43f4b6a9e1cb4659a433604f3287df1f6cb7980e03a95029472304859f518") {
-                    mensagem.innerText = "Combinação aceita. Descriptografando arquivo...";
-                    mensagem.style.color = "#00ff00";
-                    
-                    setTimeout(() => {
-                        window.location.href = "https://youtu.be/Xohu3ibYpk4";
-                    }, 1000);
-                } else {
-                    mensagem.innerText = "Combinação incorreta. Acesso negado.";
-                    mensagem.style.color = "#ff4444";
-                    setTimeout(() => {
-                        limparCofre();
-                    }, 600);
-                }
+            mensagem.innerText = "Processando requisição...";
+            mensagem.style.color = "gray";
+
+            const hashSenha = await gerarHash(senhaDigitada);
+
+            // O hash abaixo corresponde à senha "2707" criptografada
+            if (hashSenha === "ceb43f4b6a9e1cb4659a433604f3287df1f6cb7980e03a95029472304859f518") {
+                mensagem.innerText = "Combinação aceita. Descriptografando arquivo...";
+                mensagem.style.color = "#00ff00";
+                
+                setTimeout(() => {
+                    window.location.href = "https://youtu.be/Xohu3ibYpk4";
+                }, 1000);
             } else {
-                mensagem.innerText = "Aguardando combinação...";
-                mensagem.style.color = "yellow";
+                mensagem.innerText = "Combinação incorreta. Acesso negado.";
+                mensagem.style.color = "#ff4444";
+                setTimeout(() => {
+                    limparCofre();
+                }, 800);
             }
         }
 
         function limparCofre() {
             digitos.forEach(input => input.value = "");
+            mensagem.innerText = "Aguardando combinação...";
+            mensagem.style.color = "yellow";
             digitos[0].focus();
         }
     </script>
